@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
     start = omp_get_wtime(); //?
 
     /* ? */
-    #pragma omp parallel num_threads(4)
+    #pragma omp parallel num_threads(10000)
     {
         threadID = omp_get_thread_num(); //?
         printf("Hello from thread %d\n", threadID);
