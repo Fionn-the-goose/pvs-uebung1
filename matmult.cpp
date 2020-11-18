@@ -14,8 +14,16 @@ float **alloc_mat(int row, int col)
 
 	A1 = (float **)calloc(row, sizeof(float *));		// pointer on rows
 	A2 = (float *)calloc(row*col, sizeof(float));    // all matrix elements
-    for (int i = 0; i < row; i++)
-        A1[i] = A2 + i*col;
+
+//	double start = omp_get_wtime();
+//	#pragma omp parallel for
+	for (int i = 0; i < row; i++)
+	{
+		A1[i] = A2 + i*col;
+//		printf("Thread Num: %d\n", omp_get_thread_num());
+	}
+//	double end = omp_get_wtime();
+//	printf("Time for matrix allocation: %f\n", end - start);
 
     return A1;
 }
@@ -25,7 +33,7 @@ float **alloc_mat(int row, int col)
 
 void init_mat(float **A, int row, int col)
 {
-    for (int i = 0; i < row*col; i++)
+	for (int i = 0; i < row*col; i++)
 		A[0][i] = (float)(rand() % 10);
 }
 
@@ -89,20 +97,22 @@ int main(int argc, char *argv[])
     printf("Perform matrix multiplication...\n");
 	double start = omp_get_wtime();
 
-	#pragma omp parallel for collapse(3)
+//	#pragma omp parallel for collapse(3)
 	for (i = 0; i < d1; i++)
 		for (j = 0; j < d3; j++)
 			for (k = 0; k < d2; k++)
+			{
 				C[i][j] += A[i][k] * B[k][j];
-
+			
+			}
 	double end = omp_get_wtime();
 	printf("Matrix multiplication took %f seconds\n", end - start);
 
 
     /* test output */
-    print_mat(A, d1, d2, "A"); 
-    print_mat(B, d2, d3, "B"); 
-    print_mat(C, d1, d3, "C"); 
+//    print_mat(A, d1, d2, "A"); 
+//    print_mat(B, d2, d3, "B"); 
+//    print_mat(C, d1, d3, "C"); 
 
     printf ("\nDone.\n");
 	
