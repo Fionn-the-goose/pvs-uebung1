@@ -21,7 +21,6 @@ float **alloc_mat(int row, int col)
 	for (int i = 0; i < row; i++)
 	{
 		A1[i] = A2 + i*col;
-//		printf("Thread Num: %d\n", omp_get_thread_num());
 	}
 //	double end = omp_get_wtime();
 //	printf("Time for matrix allocation: %f\n", end - start);
@@ -34,6 +33,7 @@ float **alloc_mat(int row, int col)
 
 void init_mat(float **A, int row, int col)
 {
+//	#pragma omp parallel for
 	for (int i = 0; i < row*col; i++)
 		A[0][i] = (float)(rand() % 10);
 }
@@ -70,6 +70,8 @@ void free_mat(float **A, int num_rows) {
 
 int main(int argc, char *argv[])
 {
+	double start_1serial = omp_get_wtime();
+
 	float **A, **B, **C;	// matrices
     int d1, d2, d3;         // dimensions of matrices
     int i, j, k;			// loop variables
@@ -96,7 +98,9 @@ int main(int argc, char *argv[])
     init_mat(B, d2, d3);
     C = alloc_mat(d1, d3);	// no initialisation of C, because it gets filled by matmult
 
-    /* serial version of matmult */
+	double end_1serial = omp_get_wtime();
+
+
     printf("Perform matrix multiplication...\n");
 	double start = omp_get_wtime();
 
