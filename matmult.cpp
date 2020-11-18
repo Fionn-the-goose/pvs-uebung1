@@ -56,6 +56,8 @@ void free_mat(float **A, int num_rows) {
 
 // ---------------------------------------------------------------------------
 
+
+
 int main(int argc, char *argv[])
 {
 	float **A, **B, **C;	// matrices
@@ -86,10 +88,12 @@ int main(int argc, char *argv[])
 
     /* serial version of matmult */
     printf("Perform matrix multiplication...\n");
+    double start = omp_get_wtime();
+    #pragma omp parallel for collapse(3);
     for (i = 0; i < d1; i++)
-       for (j = 0; j < d3; j++)
-          for (k = 0; k < d2; k++)
-             C[i][j] += A[i][k] * B[k][j];
+       	for (j = 0; j < d3; j++)
+       		for (k = 0; k < d2; k++)
+             			C[i][j] += A[i][k] * B[k][j];
 
     /* test output */
     print_mat(A, d1, d2, "A"); 
